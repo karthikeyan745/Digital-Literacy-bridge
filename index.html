@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Digital Literacy Bridge - Safe & Smart Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Canvas for celebratory confetti -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Top Navigation Bar -->
+  <header class="top-bar">
+    <div class="brand">
+      <div class="brand-icon">🌉</div>
+      <div class="brand-text">
+        <h1 class="brand-title">Digital Literacy Bridge</h1>
+        <p class="brand-subtitle">Empowering Safe & Confident Digital Citizens</p>
+      </div>
+    </div>
+
+    <!-- Status & Tracking Badges (User ID, Module Name, Completion Percentage) -->
+    <div class="header-stats">
+      <div class="stat-badge user-badge" id="userBadge" title="Click to change User ID" onclick="promptChangeUser()">
+        <span class="badge-icon">👤</span>
+        <div class="badge-info">
+          <span class="badge-label">Learner ID</span>
+          <span class="badge-val" id="displayUserId">DLB-2026-8941</span>
+        </div>
+      </div>
+
+      <div class="stat-badge module-badge">
+        <span class="badge-icon">📍</span>
+        <div class="badge-info">
+          <span class="badge-label">Active Module</span>
+          <span class="badge-val" id="activeModuleName">Dashboard</span>
+        </div>
+      </div>
+
+      <div class="stat-badge progress-badge">
+        <span class="badge-icon">📊</span>
+        <div class="badge-info">
+          <span class="badge-label">Completion</span>
+          <div class="progress-wrap">
+            <span class="badge-val" id="overallPercent">0%</span>
+            <div class="mini-bar">
+              <div class="mini-bar-fill" id="miniBarFill" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="stat-badge stars-badge" id="starsBadge">
+        <span class="badge-icon star-glow">⭐</span>
+        <div class="badge-info">
+          <span class="badge-label">Stars Earned</span>
+          <span class="badge-val star-count" id="stars">0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accessibility & Tools Controls -->
+    <div class="header-controls">
+      <button class="icon-btn" id="ttsBtn" onclick="toggleReadAloud()" title="Read page aloud / Text to Speech" aria-label="Read Aloud">
+        <span id="ttsIcon">🔊</span>
+        <span class="btn-text">Listen</span>
+      </button>
+      <button class="icon-btn" id="fontResizeBtn" onclick="cycleFontSize()" title="Adjust text size for better readability" aria-label="Font Size">
+        <span>Aa</span>
+      </button>
+      <button class="icon-btn" id="themeToggleBtn" onclick="toggleDarkMode()" title="Toggle Dark / Light Mode" aria-label="Toggle Theme">
+        <span id="themeIcon">🌙</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Application Shell -->
+  <div class="shell">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-section-title">LEARNING PATHWAYS</div>
+      <nav class="nav-menu">
+        <button class="nav-btn active" id="btn-dashboard" onclick="loadModule('dashboard')">
+          <span class="nav-icon">🏠</span>
+          <span class="nav-text">Dashboard</span>
+          <span class="nav-pill" id="pill-dashboard">Overview</span>
+        </button>
+
+        <button class="nav-btn" id="btn-email" onclick="loadModule('email')">
+          <span class="nav-icon">📧</span>
+          <span class="nav-text">Email Essentials</span>
+          <span class="nav-pill" id="pill-email">0%</span>
+        </button>
+
+        <button class="nav-btn" id="btn-social" onclick="loadModule('social')">
+          <span class="nav-icon">🌐</span>
+          <span class="nav-text">Social & Privacy</span>
+          <span class="nav-pill" id="pill-social">0%</span>
+        </button>
+
+        <button class="nav-btn" id="btn-banking" onclick="loadModule('banking')">
+          <span class="nav-icon">🏦</span>
+          <span class="nav-text">Banking & UPI</span>
+          <span class="nav-pill" id="pill-banking">0%</span>
+        </button>
+
+        <button class="nav-btn" id="btn-scam" onclick="loadModule('scam')">
+          <span class="nav-icon">🕵️</span>
+          <span class="nav-text">Scam Awareness</span>
+          <span class="nav-pill" id="pill-scam">0%</span>
+        </button>
+
+        <button class="nav-btn" id="btn-certificate" onclick="loadModule('certificate')">
+          <span class="nav-icon">🎓</span>
+          <span class="nav-text">Certificate</span>
+          <span class="nav-pill" id="pill-certificate">Locked</span>
+        </button>
+      </nav>
+
+      <!-- Sidebar Mini Card: Learner summary -->
+      <div class="learner-card">
+        <div class="learner-avatar">👨‍💻</div>
+        <div class="learner-meta">
+          <div class="learner-name" id="learnerProfileName">Learner #8941</div>
+          <div class="learner-level" id="learnerBadgeLevel">Novice Explorer</div>
+        </div>
+        <div class="learner-badges-row">
+          <span class="mini-badge" id="badge-email" title="Email Master">📧</span>
+          <span class="mini-badge" id="badge-social" title="Privacy Shield">🛡️</span>
+          <span class="mini-badge" id="badge-banking" title="Secure Banker">🏦</span>
+          <span class="mini-badge" id="badge-scam" title="Fraud Hunter">🕵️</span>
+        </div>
+        <button class="reset-link" onclick="resetProgress()">Reset All Progress</button>
+      </div>
+    </aside>
+
+    <!-- Main Dynamic Content Area -->
+    <main class="content-container">
+      <div id="content" class="content-fade">
+        <!-- Content will be injected dynamically by app.js -->
+      </div>
+    </main>
+  </div>
+
+  <!-- Audio Chime Generator Container (zero external dependency) -->
+  <div id="notification-toast" class="toast hidden"></div>
+
+  <!-- Modal for User ID Configuration -->
+  <div id="userModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>👤 Edit Learner Profile</h3>
+        <button class="modal-close" onclick="closeUserModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <label for="inputUserId">Learner User ID / Name:</label>
+        <input type="text" id="inputUserId" placeholder="e.g. DLB-2026-USER01" maxlength="28" />
+        <p class="modal-hint">This ID will appear on your Certificate of Completion and learning progress logs.</p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn secondary" onclick="generateRandomUserId()">Randomize ID</button>
+        <button class="btn primary" onclick="saveUserId()">Save & Update</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
