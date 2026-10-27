@@ -6,7 +6,6 @@
 // Application State
 const state = {
   userId: localStorage.getItem('dlb_user_id') || 'DLB-2026-8941',
-  githubRepo: localStorage.getItem('dlb_github_repo') || '',
   stars: parseInt(localStorage.getItem('dlb_stars') || '0', 10),
   activeModule: 'dashboard',
   fontSizeIndex: 0,
@@ -46,14 +45,12 @@ const MODULE_NAMES = {
 window.addEventListener('DOMContentLoaded', () => {
   updateUserUI();
   updateProgressUI();
-  updateGithubUI();
   loadModule('dashboard');
   setupConfetti();
 });
 
 function saveState() {
   localStorage.setItem('dlb_user_id', state.userId);
-  localStorage.setItem('dlb_github_repo', state.githubRepo);
   localStorage.setItem('dlb_stars', state.stars.toString());
   localStorage.setItem('dlb_modules', JSON.stringify(state.modules));
 }
@@ -1257,77 +1254,3 @@ function animateConfetti() {
     confettiCtx.clearRect(0, 0, canvas.width, canvas.height);
   }
 }
-
-/* ==========================================================
-   GITHUB REPOSITORY CONNECTION HANDLERS
-   ========================================================== */
-function updateGithubUI() {
-  const btn = document.getElementById('githubLinkBtn');
-  const btnText = document.getElementById('githubBtnText');
-  const hint = document.getElementById('hintRepoUrl');
-  const input = document.getElementById('inputGithubRepo');
-
-  if (state.githubRepo) {
-    if (btn) btn.href = state.githubRepo;
-    if (btnText) btnText.textContent = 'Repo Link';
-    if (hint) hint.textContent = state.githubRepo;
-    if (input) input.value = state.githubRepo;
-  } else {
-    if (btn) btn.href = '#';
-    if (btnText) btnText.textContent = 'Connect GitHub';
-    if (hint) hint.textContent = 'https://github.com/<your-username>/digital-literacy-bridge.git';
-  }
-}
-
-function handleGithubClick(e) {
-  if (!state.githubRepo) {
-    e.preventDefault();
-    openGithubModal(e);
-  }
-}
-
-function openGithubModal(e) {
-  if (e) e.preventDefault();
-  const modal = document.getElementById('githubModal');
-  const input = document.getElementById('inputGithubRepo');
-  if (modal) {
-    if (input && state.githubRepo) input.value = state.githubRepo;
-    modal.classList.remove('hidden');
-  }
-}
-
-function closeGithubModal() {
-  const modal = document.getElementById('githubModal');
-  if (modal) modal.classList.add('hidden');
-}
-
-function saveGithubRepoUrl() {
-  const input = document.getElementById('inputGithubRepo');
-  if (input) {
-    const val = input.value.trim();
-    state.githubRepo = val;
-    saveState();
-    updateGithubUI();
-    closeGithubModal();
-    if (val) {
-      showToast('🐙 GitHub Repository connected!');
-    } else {
-      showToast('ℹ️ GitHub link cleared.');
-    }
-  }
-}
-
-function openNewRepoPage() {
-  window.open('https://github.com/new', '_blank');
-}
-
-function testVisitRepo() {
-  const input = document.getElementById('inputGithubRepo');
-  const url = input && input.value.trim() ? input.value.trim() : state.githubRepo;
-  if (url) {
-    window.open(url, '_blank');
-  } else {
-    showToast('⚠️ Please enter a GitHub repository URL first.');
-  }
-}
-
